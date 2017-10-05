@@ -79,16 +79,16 @@ def tc_model(params, temps, data=None, **kwargs):
     else:
         return model
 
-def tc_params(rvals, tvals, **kwargs):
+def tc_params(tvals, rvals, **kwargs):
     """Build up a Parameters object to pass to the fitting function.
 
     Parameters
     ----------
-    rvals : np.array
-        Resistance data as 1D array
-
     tvals : np.array
         Temperature data s 1D array (units are K)
+        
+    rvals : np.array
+        Resistance data as 1D array
 
     Keyword arguments
     -----------------

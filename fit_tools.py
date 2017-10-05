@@ -2,7 +2,18 @@ import numpy as np
 import lmfit as lf
 
 def do_lmfit(xdata, ydata, fit_fn, params, **kwargs):
-    """Run any fit from models on your data"""
+    """Run any fit from models on your data.
+
+    Paramters
+    ---------
+    xdata : np.array
+        The points at which to calculate the model.
+
+    ydata : np.array
+        The data to compare to the calculated model.
+
+    fit_fn : callable
+        Model function to pass to minimizer. Must have signature"""
     #pop model kwargs off the top
     model_kwargs = kwargs.pop('model_kwargs', {})
 
@@ -26,7 +37,7 @@ def do_lmfit(xdata, ydata, fit_fn, params, **kwargs):
             elif key in params.keys():
                 params[key].value = val
 
-    minObj = lf.Minimizer(fit_fn, params, fcn_args=(ydata, xdata, **model_kwargs))
+    minObj = lf.Minimizer(fit_fn, params, fcn_args=(xdata, ydata, **model_kwargs))
     fit_result = minObj.minimize()
 
     return fit_result
