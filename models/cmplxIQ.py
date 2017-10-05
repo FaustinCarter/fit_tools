@@ -3,6 +3,79 @@ import scipy.signal as sps
 import scipy.special as spc
 import lmfit as lf
 
+class Resonator_Skeleton(object):
+    r"""Skeleton class for params method in case not using scraps.
+
+    Parameters
+    ----------
+    freqs : array-like[nDataPoints]
+        The frequency points at which the S21 scan was measured.
+
+    Idata : array-like[nDataPoints]
+        The in-phase (or real part) of the complex S21 measurement. Units
+        are typically volts, and I should be specified in linear units (as
+        opposed to dB).
+
+    Qdata : array-like[nDataPoints]
+        The out-of-phase (or imaginary part) of the complex S21 measurement.
+        Units are typically volts, and I should be specified in linear units
+        (as opposed to dB).
+
+    The following attributes are automatically calculated and added during
+    initialization.
+
+    Attributes
+    ----------
+    freq : array-like[nDataPoints]
+        The frequency points passed at initialization.
+
+    I : array-like[nDataPoints]
+        The I data points passed at initialization.
+
+    Q : array-like[nDataPoints]
+        The Q data points passed at initialization.
+
+    sigmaI : array-like[nDataPoints]
+        The sigmaI values passed at initialization.
+
+    sigmaQ : array-like[nDataPoints]
+        The sigmaQ values passed at initialization.
+
+    S21 : array-like[nDataPoints]
+        The complex transmission ``S21 = I + 1j*Q``.
+
+    phase : array-like[nDataPoints]
+        The raw phase ``phase = np.arctan2(Q, I)``.
+
+    uphase : array-like[nDataPoints]
+        The unwrapped phase is equivalent to the phase, but with jumps of 2 Pi
+        removed.
+
+    mag : array-like[nDataPoints]
+        The magnitude ``mag = np.abs(S21)`` or, equivalently ``mag =
+        np.sqrt(I**2 + Q**2)``.
+    """
+
+
+    #Do some initialization
+    def __init__(self, Idata, Qdata, freqs):
+        r"""Initializes a resonator object by calculating magnitude, phase, and
+        a bunch of fit parameters for a hanger (or notch) type S21 measurement.
+
+        """
+        self.freq = np.asarray(freq)
+        self.I = np.asarray(I)
+        self.Q = np.asarray(Q)
+        self.sigmaI =  None
+        self.sigmaQ =  None
+        self.phase = np.arctan2(Q,I) #use arctan2 because it is quadrant-aware
+        self.uphase = np.unwrap(self.phase) #Unwrap the 2pi phase jumps
+        self.mag = np.abs(I + 1j*Q) #Units are volts.
+
+        #Find the frequency at magnitude minimum (this can, and should, be
+        #overwritten by a custom params function)
+        self.fmin = self.freq[np.argmin(self.mag)]
+
 def cmplxIQ_fit(paramsVec, freqs, data=None, eps=None, **kwargs):
     """Return complex S21 resonance model or, if data is specified, a residual.
 
@@ -115,8 +188,9 @@ def cmplxIQ_params(res, **kwargs):
 
     Parameters
     ----------
-    res : ``scraps.Resonator`` object
-        The object you want to calculate parameter guesses for.
+    res : ``scraps.Resonator``
+        The object you want to calculate parameter guesses for. If None, must
+        pass Idata, Qdata, and freqs.
 
     Keyword Arguments
     -----------------
@@ -138,11 +212,29 @@ def cmplxIQ_params(res, **kwargs):
         the data when ``use_filter == True``. Default is ``0.1 * len(data)`` or
         3, whichever is larger.
 
+    Idata : np.array
+        If not passing in a scraps resonator object, this is the in-phase resonator response
+
+    Qdata : np.array
+        If not passing in a scraps resonator object, this is the quadrature resonator response
+
+    freqs : np.array
+        If  not passing in a scraps resonator object, this is the frequency vector
+
     Returns
     -------
     params : ``lmfit.Parameters`` object
 
     """
+
+    if res is None:
+        #If not using scraps, build a skeleton object so we can use the rest of the scraps code
+        assert all(key in kwargs for key in ['Idata', 'Qdata', 'freqs']), "If not passing in a resonator object, must specify Idata, Qdata, and freqs."
+        Idata = kwargs.pop('Idata')
+        Qdata = kwargs.pop('Qdata')
+        freqs = kwargs.pop('freqs')
+
+        res = Resonator_Skeleton(Idata, Qdata, freqs)
 
     #Check if some other type of hardware is supplied
     hardware = kwargs.pop('hardware', 'VNA')
