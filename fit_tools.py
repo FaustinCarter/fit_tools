@@ -2,6 +2,7 @@
 
 import numpy as np
 import lmfit as lf
+import warnings
 
 def do_lmfit(xdata, ydata, fit_fn, params, **kwargs):
     """Run any fit from models on your data.
@@ -38,6 +39,8 @@ def do_lmfit(xdata, ydata, fit_fn, params, **kwargs):
             #Allow for overriding the default guesses
             elif key in params.keys():
                 params[key].value = val
+            else:
+                warnings.warn("Unknown keyword: "+key, UserWarning)
 
     minObj = lf.Minimizer(fit_fn, params, fcn_args=(xdata, ydata, **model_kwargs))
     fit_result = minObj.minimize()
