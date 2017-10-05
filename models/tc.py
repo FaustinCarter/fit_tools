@@ -1,3 +1,6 @@
+
+#By: Faustin Carter (faustin.carter@gmail.com), 2017
+
 import numpy as np
 import lmfit as lf
 
@@ -86,7 +89,7 @@ def tc_params(tvals, rvals, **kwargs):
     ----------
     tvals : np.array
         Temperature data s 1D array (units are K)
-        
+
     rvals : np.array
         Resistance data as 1D array
 

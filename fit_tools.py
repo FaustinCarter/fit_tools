@@ -1,3 +1,5 @@
+#By: Faustin Carter (faustin.carter@gmail.com), 2017
+
 import numpy as np
 import lmfit as lf
 

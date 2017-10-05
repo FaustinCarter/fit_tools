@@ -1,3 +1,7 @@
+#By: Faustin Carter (faustin.carter@gmail.com), 2017
+#This file is a modified version of a fit routine from a larger package called
+#scraps, available on PyPI
+
 import numpy as np
 import scipy.signal as sps
 import scipy.special as spc
