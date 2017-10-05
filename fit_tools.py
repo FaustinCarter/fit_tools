@@ -2,6 +2,9 @@ import numpy as np
 import lmfit as lf
 
 def do_lmfit(xdata, ydata, fit_fn, params, **kwargs):
+    """Run any fit from models on your data"""
+    #pop model kwargs off the top
+    model_kwargs = kwargs.pop('model_kwargs', {})
 
     #Override any of the default Parameter settings
     if kwargs is not None:
@@ -22,10 +25,8 @@ def do_lmfit(xdata, ydata, fit_fn, params, **kwargs):
             #Allow for overriding the default guesses
             elif key in params.keys():
                 params[key].value = val
-            else:
-                raise ValueError("Unknown keyword: "+key)
 
-    minObj = lf.Minimizer(fit_fn, params, fcn_args=(ydata, xdata, eps))
+    minObj = lf.Minimizer(fit_fn, params, fcn_args=(ydata, xdata, **model_kwargs))
     fit_result = minObj.minimize()
 
     return fit_result

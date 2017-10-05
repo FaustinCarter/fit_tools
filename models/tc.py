@@ -3,7 +3,7 @@ import lmfit as lf
 
 __all__ = ['tc_model', 'tc_params']
 
-def tc_model(params, data, temps, eps):
+def tc_model(params, temps, data=None, **kwargs):
     """A fit function that fits a tanh-like superconducting transition
 
     Parameters
@@ -16,6 +16,14 @@ def tc_model(params, data, temps, eps):
     temps: numpy.array
         temperature data
 
+    Keyword arguments
+    -----------------
+    eps : float
+        An uncertainty in the measurement data
+
+    eps_range : tuple
+        A range of data over which to calculate eps via standard deviation
+
     eps : numpy.array
         uncertaintly on resistance data
 
@@ -24,6 +32,8 @@ def tc_model(params, data, temps, eps):
     residual or model : numpy.array
         If data is passed, then this calculates a residual against the model.
         Otherwise it returns the model calculated from the parameter values."""
+
+    eps = kwargs.pop('eps', None)
 
     #normal resistance (Ohms)
     Rn = params['Rn'].value
@@ -56,6 +66,13 @@ def tc_model(params, data, temps, eps):
 
         model = 0.5*Rn*(1+np.tanh(2*np.log(3)*(temps-Tc)/dTc))+Rp
 
+    if (eps is None) and (data is not None):
+        #Use the standard deviation of the last 10 data points to calculate the noise
+        #Or some custom range
+        eps_range = kwargs.pop('eps_range', (-10, -1))
+        eps_range = slice(*eps_range)
+        eps = np.std(rvals[eps_range])
+
     if data is not None:
         residual = (model-data)/eps
         return residual
@@ -63,16 +80,28 @@ def tc_model(params, data, temps, eps):
         return model
 
 def tc_params(rvals, tvals, **kwargs):
-    """Build up a Parameters object to pass to the fitting function"""
+    """Build up a Parameters object to pass to the fitting function.
+
+    Parameters
+    ----------
+    rvals : np.array
+        Resistance data as 1D array
+
+    tvals : np.array
+        Temperature data s 1D array (units are K)
+
+    Keyword arguments
+    -----------------
+    has_steps : bool
+        Whether or not to try adding up to two steps to the Tc curve for a
+        better fit. Default is False.
+
+    Returns
+    -------
+    params : lmfit.Paramters object
+        A Paramters object with 'good' guesses for all the fit parameters."""
 
     params = lf.Parameters()
-
-
-    #Use the standard deviation of the last 10 data points to calculate the noise
-    #Or some custom range
-    eps_range = kwargs.pop('eps_range', (-10, -1))
-    eps_range = slice(*eps_range)
-    eps = np.std(rvals[eps_range])
 
     #Whether or not to fit a model with up to two steps
     has_steps = kwargs.pop('has_steps', False)
