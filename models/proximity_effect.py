@@ -114,7 +114,7 @@ def trilayer_model(params, xvals, data=None, axis='s', **kwargs):
         Either 's' for superconducting or 'lhs' or 'rhs' for normal. This
         specifies what type of thicknesses xvals contains. If axis='s' then
         params must include 'dL' and 'dR' and if axis='lhs' or 'rhs' params must
-        contain 'dS' and the other normal film param. 
+        contain 'dS' and the other normal film param.  Default is 's'.
         
     Keyword Arguments
     -----------------
