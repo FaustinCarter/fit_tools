@@ -151,6 +151,8 @@ def trilayer_model(params, xvals, data=None, axis='s', **kwargs):
     thetaD = params['thetaD']
     tIntL = params['tIntL']
     tIntR = params['tIntR']
+    tauL = params['tauL']
+    tauR = params['tauR']
     
     
     if (eps is None) and (data is not None):
