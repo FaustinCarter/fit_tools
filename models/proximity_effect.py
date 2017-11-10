@@ -1,3 +1,5 @@
+#By: Faustin Carter (faustin.carter@gmail.com), 2017
+
 import scipy.special as ss
 import scipy.constants as sc
 import scipy.optimize as so
