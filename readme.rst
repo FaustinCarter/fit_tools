@@ -5,6 +5,7 @@ Wraps lmfit, which is a wrapper for scipy.optimize.
 Models that exist:
  * Superconducting transition (resistance vs. temperature)
  * Complex IQ transmission resonance (S21 vs. frequency)
+ * NS and NSN proximity effect models for calulating Tc vs film thickness
 
 Each model must contain at least one method that implements a model and returns
 a residual. Ideally, each model will also implement a parameter guessing method
