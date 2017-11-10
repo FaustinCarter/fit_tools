@@ -74,7 +74,7 @@ def tc_model(params, temps, data=None, **kwargs):
         #Or some custom range
         eps_range = kwargs.pop('eps_range', (-10, -1))
         eps_range = slice(*eps_range)
-        eps = np.std(rvals[eps_range])
+        eps = np.std(data[eps_range])
 
     if data is not None:
         residual = (model-data)/eps

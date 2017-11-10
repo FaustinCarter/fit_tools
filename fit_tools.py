@@ -42,7 +42,7 @@ def do_lmfit(xdata, ydata, fit_fn, params, **kwargs):
             else:
                 warnings.warn("Unknown keyword: "+key, UserWarning)
 
-    minObj = lf.Minimizer(fit_fn, params, fcn_args=(xdata, ydata, **model_kwargs))
+    minObj = lf.Minimizer(fit_fn, params, fcn_args=(xdata, ydata), fcn_kws=model_kwargs)
     fit_result = minObj.minimize()
 
     return fit_result
