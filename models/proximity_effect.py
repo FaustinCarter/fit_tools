@@ -84,7 +84,7 @@ def bilayer_model(params, xvals, data=None, axis='s', **kwargs):
         
     if axis == 's':
         model = bilayer_kernel(dSs, dN, tc0, vFS, vFN, thetaD, tInt)
-    elif axis = 'n':
+    elif axis == 'n':
         model = bilayer_kernel(dS, dNs, tc0, vFS, vFN, thetaD, tInt)
 
     if data is not None:
@@ -163,9 +163,9 @@ def trilayer_model(params, xvals, data=None, axis='s', **kwargs):
         
     if axis == 's':
         model = trilayer_kernel(dSs, dL, dR, tc0, vFS, vFL, vFR, thetaD, tIntL, tIntR, tauL, tauR)
-    elif axis = 'lhs':
+    elif axis == 'lhs':
         model = trilayer_kernel(dS, dLs, dR, tc0, vFS, vFL, vFR, thetaD, tIntL, tIntR, tauL, tauR)
-    elif axis = 'rhs':
+    elif axis == 'rhs':
         model = trilayer_kernel(dS, dL, dRs, tc0, vFS, vFL, vFR, thetaD, tIntL, tIntR, tauL, tauR)
 
     if data is not None:
