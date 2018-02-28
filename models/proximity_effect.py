@@ -187,9 +187,9 @@ def bilayer_kernel(dS, dN, tc0, vFS, vFN, thetaD, tInt):
     tc0 : float
         Critical temperature of bulk superconducting film in Kelvin
     vFS : float
-        Fermi velocity of superconducting film
+        Fermi velocity of superconducting film in meters/second
     vFN : float
-        Fermi velocity of normal metal film
+        Fermi velocity of normal metal film in meters/second
     thetaD : float
         Debye temperature of superconducting film in Kelvin
     tInt : float
@@ -208,9 +208,12 @@ def bilayer_kernel(dS, dN, tc0, vFS, vFN, thetaD, tInt):
     Ya. V. Fominov and M. V. Feigel'man
     Phys. Rev. B, Vol. 63, 094518 (2001)
     Eqs. (25) and (30)
+    
+    The units have been converted from the Natural units used in the paper
+    to SI units.
     """
     
-    #Calculate Debye frequency
+    #Calculate Debye frequency(ish) it really should be h and not hbar...
     omegaD = sc.k*thetaD/sc.h
     
     #If there is no superconductor there is no transition!
@@ -226,12 +229,12 @@ def bilayer_kernel(dS, dN, tc0, vFS, vFN, thetaD, tInt):
             if dN == 0:
                 retval = -np.log(tc0/tc)
             else:
-                tauS = sc.pi*dS*2/(tInt*vFS)
-                tauN = 2*sc.pi*dN*vFN*2/(tInt*vFS**2)
+                tauS = 8*sc.pi**2*dS/(tInt*vFS)
+                tauN = 8*sc.pi**2*dN*vFN/(tInt*vFS**2)
 
                 tauR = tauN/(tauS+tauN)
 
-                retval = (tauR*(ss.digamma(0.5+sc.hbar/(sc.k*tc*tauS*tauR))-
+                retval = (tauR*(ss.digamma(0.5+sc.h/(2*sc.pi*sc.k*tc*tauS*tauR))-
                              ss.digamma(0.5)-
                              np.log(np.sqrt(1+1/(tauR*tauS*omegaD)**2)))
                         -np.log(tc0/tc))
