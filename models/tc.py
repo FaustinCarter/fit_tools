@@ -110,10 +110,10 @@ def tc_params(tvals, rvals, **kwargs):
     has_steps = kwargs.pop('has_steps', False)
 
     Rpguess = np.mean(rvals[0:10])
-    params.add('Rp', value=Rpguess, min=Rpguess-5*eps, max=Rpguess+5*eps, vary=False)
+    params.add('Rp', value=Rpguess, min=Rpguess-5, max=Rpguess+5, vary=False)
 
     Rnguess = (np.mean(rvals[-10:-1])-Rpguess)
-    params.add('Rn', value=Rnguess, min=Rnguess-5*eps, max=Rnguess+5*eps, vary=False)
+    params.add('Rn', value=Rnguess, min=Rnguess-5, max=Rnguess+5, vary=False)
 
     Tcguess = tvals[np.argmax(rvals>(2*Rnguess+3*Rpguess)/3.0)]
     params.add('Tc', value=Tcguess, min=Tcguess*0.9, max=Tcguess*1.1, vary=True)
