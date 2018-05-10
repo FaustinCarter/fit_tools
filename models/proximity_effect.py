@@ -217,7 +217,7 @@ def bilayer_kernel(dS, dN, tc0, vFS, vFN, thetaD, tInt):
     omegaD = sc.k*thetaD/sc.h
     
     #If there is no superconductor there is no transition!
-    if dS == 0:
+    if not np.all(dS):
         assert dN != 0, "Can't have a zero thickness film!"
         tc = 0.0
     #Run the model
